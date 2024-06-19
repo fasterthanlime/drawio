@@ -4,11 +4,11 @@
  */
 /**
  * Class: mxCellRenderer
- * 
+ *
  * Renders cells into a document object model. The <defaultShapes> is a global
  * map of shapename, constructor pairs that is used in all instances. You can
  * get a list of all available shape names using the following code.
- * 
+ *
  * In general the cell renderer is in charge of creating, redrawing and
  * destroying the shape and label associated with a cell state, as well as
  * some other graphical objects, namely controls and overlays. The shape
@@ -17,7 +17,7 @@
  * are a (flat) sequence of shapes and labels inside the draw pane of the
  * graph view, with some exceptions, namely the HTML labels being placed
  * directly inside the graph container for certain browsers.
- * 
+ *
  * (code)
  * mxLog.show();
  * for (var i in mxCellRenderer.defaultShapes)
@@ -27,7 +27,7 @@
  * (end)
  *
  * Constructor: mxCellRenderer
- * 
+ *
  * Constructs a new cell renderer with the following built-in shapes:
  * arrow, rectangle, ellipse, rhombus, image, line, label, cylinder,
  * swimlane, connector, actor and cloud.
@@ -36,7 +36,7 @@ function mxCellRenderer() { };
 
 /**
  * Variable: defaultShapes
- * 
+ *
  * Static array that contains the globally registered shapes which are
  * known to all instances of this class. For adding new shapes you should
  * use the static <mxCellRenderer.registerShape> function.
@@ -45,28 +45,28 @@ mxCellRenderer.defaultShapes = new Object();
 
 /**
  * Variable: defaultEdgeShape
- * 
+ *
  * Defines the default shape for edges. Default is <mxConnector>.
  */
 mxCellRenderer.prototype.defaultEdgeShape = mxConnector;
 
 /**
  * Variable: defaultVertexShape
- * 
+ *
  * Defines the default shape for vertices. Default is <mxRectangleShape>.
  */
 mxCellRenderer.prototype.defaultVertexShape = mxRectangleShape;
 
 /**
  * Variable: defaultTextShape
- * 
+ *
  * Defines the default shape for labels. Default is <mxText>.
  */
 mxCellRenderer.prototype.defaultTextShape = mxText;
 
 /**
  * Variable: legacyControlPosition
- * 
+ *
  * Specifies if the folding icon should ignore the horizontal
  * orientation of a swimlane. Default is true.
  */
@@ -74,7 +74,7 @@ mxCellRenderer.prototype.legacyControlPosition = true;
 
 /**
  * Variable: legacySpacing
- * 
+ *
  * Specifies if spacing and label position should be ignored if overflow is
  * fill or width. Default is true for backwards compatiblity.
  */
@@ -82,21 +82,21 @@ mxCellRenderer.prototype.legacySpacing = true;
 
 /**
  * Variable: antiAlias
- * 
+ *
  * Anti-aliasing option for new shapes. Default is true.
  */
 mxCellRenderer.prototype.antiAlias = true;
 
 /**
  * Variable: minSvgStrokeWidth
- * 
+ *
  * Minimum stroke width for SVG output.
  */
 mxCellRenderer.prototype.minSvgStrokeWidth = 1;
 
 /**
  * Variable: forceControlClickHandler
- * 
+ *
  * Specifies if the enabled state of the graph should be ignored in the control
  * click handler (to allow folding in disabled graphs). Default is false.
  */
@@ -104,18 +104,18 @@ mxCellRenderer.prototype.forceControlClickHandler = false;
 
 /**
  * Function: registerShape
- * 
+ *
  * Registers the given constructor under the specified key in this instance
  * of the renderer.
- * 
+ *
  * Example:
- * 
+ *
  * (code)
  * mxCellRenderer.registerShape(mxConstants.SHAPE_RECTANGLE, mxRectangleShape);
  * (end)
- * 
+ *
  * Parameters:
- * 
+ *
  * key - String representing the shape name.
  * shape - Constructor of the <mxShape> subclass.
  */
@@ -144,12 +144,12 @@ mxCellRenderer.registerShape(mxConstants.SHAPE_LABEL, mxLabel);
 
 /**
  * Function: initializeShape
- * 
+ *
  * Initializes the shape in the given state by calling its init method with
  * the correct container after configuring it using <configureShape>.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the shape should be initialized.
  */
 mxCellRenderer.prototype.initializeShape = function(state)
@@ -161,17 +161,17 @@ mxCellRenderer.prototype.initializeShape = function(state)
 
 /**
  * Function: createShape
- * 
+ *
  * Creates and returns the shape for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the shape should be created.
  */
 mxCellRenderer.prototype.createShape = function(state)
 {
 	var shape = null;
-	
+
 	if (state.style != null)
 	{
 		// Checks if there is a stencil for the name and creates
@@ -179,7 +179,7 @@ mxCellRenderer.prototype.createShape = function(state)
 		var name = state.style[mxConstants.STYLE_SHAPE];
 		var stencil = (mxCellRenderer.defaultShapes[name] == null) ?
 			mxStencilRegistry.getStencil(name) : null;
-		
+
 		if (stencil != null)
 		{
 			shape = new mxShape(stencil);
@@ -190,17 +190,17 @@ mxCellRenderer.prototype.createShape = function(state)
 			shape = new ctor();
 		}
 	}
-	
+
 	return shape;
 };
 
 /**
  * Function: createIndicatorShape
- * 
+ *
  * Creates the indicator shape for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the indicator shape should be created.
  */
 mxCellRenderer.prototype.createIndicatorShape = function(state)
@@ -210,7 +210,7 @@ mxCellRenderer.prototype.createIndicatorShape = function(state)
 
 /**
  * Function: getShape
- * 
+ *
  * Returns the shape for the given name from <defaultShapes>.
  */
 mxCellRenderer.prototype.getShape = function(name)
@@ -220,29 +220,29 @@ mxCellRenderer.prototype.getShape = function(name)
 
 /**
  * Function: getShapeConstructor
- * 
+ *
  * Returns the constructor to be used for creating the shape.
  */
 mxCellRenderer.prototype.getShapeConstructor = function(state)
 {
 	var ctor = this.getShape(state.style[mxConstants.STYLE_SHAPE]);
-	
+
 	if (ctor == null)
 	{
 		ctor = (state.view.graph.getModel().isEdge(state.cell)) ?
 			this.defaultEdgeShape : this.defaultVertexShape;
 	}
-	
+
 	return ctor;
 };
 
 /**
  * Function: configureShape
- * 
+ *
  * Configures the shape for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the shape should be configured.
  */
 mxCellRenderer.prototype.configureShape = function(state)
@@ -260,7 +260,7 @@ mxCellRenderer.prototype.configureShape = function(state)
 
 /**
  * Function: postConfigureShape
- * 
+ *
  * Replaces any reserved words used for attributes, eg. inherit,
  * indicated or swimlane for colors in the shape for the given state.
  * This implementation resolves these keywords on the fill, stroke
@@ -280,7 +280,7 @@ mxCellRenderer.prototype.postConfigureShape = function(state)
 
 /**
  * Function: checkPlaceholderStyles
- * 
+ *
  * Checks if the style of the given <mxCellState> contains 'inherit',
  * 'indicated' or 'swimlane' for colors that support those keywords.
  */
@@ -292,7 +292,7 @@ mxCellRenderer.prototype.checkPlaceholderStyles = function(state)
 		var values = ['inherit', 'swimlane', 'indicated'];
 		var styles = [mxConstants.STYLE_FILLCOLOR, mxConstants.STYLE_STROKECOLOR,
 			mxConstants.STYLE_GRADIENTCOLOR, mxConstants.STYLE_FONTCOLOR];
-		
+
 		for (var i = 0; i < styles.length; i++)
 		{
 			if (mxUtils.indexOf(values, state.style[styles[i]]) >= 0)
@@ -301,13 +301,13 @@ mxCellRenderer.prototype.checkPlaceholderStyles = function(state)
 			}
 		}
 	}
-	
+
 	return false;
 };
 
 /**
  * Function: resolveColor
- * 
+ *
  * Resolves special keywords 'inherit', 'indicated' and 'swimlane' and sets
  * the respective color on the shape.
  */
@@ -315,13 +315,13 @@ mxCellRenderer.prototype.resolveColor = function(state, field, key)
 {
 	var shape = (key == mxConstants.STYLE_FONTCOLOR) ?
 		state.text : state.shape;
-	
+
 	if (shape != null)
 	{
 		var graph = state.view.graph;
 		var value = shape[field];
 		var referenced = null;
-		
+
 		if (value == 'inherit')
 		{
 			referenced = graph.model.getParent(state.cell);
@@ -331,7 +331,7 @@ mxCellRenderer.prototype.resolveColor = function(state, field, key)
 			shape[field] = (key == mxConstants.STYLE_STROKECOLOR ||
 				key == mxConstants.STYLE_FONTCOLOR) ?
 				'#000000' : '#ffffff';
-			
+
 			if (graph.model.getTerminal(state.cell, false) != null)
 			{
 				referenced = graph.model.getTerminal(state.cell, false);
@@ -340,7 +340,7 @@ mxCellRenderer.prototype.resolveColor = function(state, field, key)
 			{
 				referenced = state.cell;
 			}
-			
+
 			referenced = graph.getSwimlane(referenced);
 			key = graph.swimlaneIndicatorColorAttribute;
 		}
@@ -360,16 +360,16 @@ mxCellRenderer.prototype.resolveColor = function(state, field, key)
 		{
 			shape[field] = state.style[mxConstants.STYLE_STROKECOLOR];
 		}
-	
+
 		if (referenced != null)
 		{
 			var rstate = graph.getView().getState(referenced);
 			shape[field] = null;
-			
+
 			if (rstate != null)
 			{
 				var rshape = (key == mxConstants.STYLE_FONTCOLOR) ? rstate.text : rstate.shape;
-				
+
 				if (rshape != null && field != 'indicatorColor')
 				{
 					shape[field] = rshape[field];
@@ -385,11 +385,11 @@ mxCellRenderer.prototype.resolveColor = function(state, field, key)
 
 /**
  * Function: getLabelValue
- * 
+ *
  * Returns the value to be used for the label.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the label should be created.
  */
 mxCellRenderer.prototype.getLabelValue = function(state)
@@ -399,11 +399,11 @@ mxCellRenderer.prototype.getLabelValue = function(state)
 
 /**
  * Function: createTextShape
- * 
+ *
  * Creates the the text shape for the given state and dialect.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the label should be created.
  */
 mxCellRenderer.prototype.createTextShape = function(state, value, dialect)
@@ -440,17 +440,17 @@ mxCellRenderer.prototype.createTextShape = function(state, value, dialect)
 
 /**
  * Function: createLabel
- * 
+ *
  * Creates the label for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the label should be created.
  */
 mxCellRenderer.prototype.createLabel = function(state, value)
 {
 	var graph = state.view.graph;
-	
+
 	if (state.style[mxConstants.STYLE_FONTSIZE] > 0 || state.style[mxConstants.STYLE_FONTSIZE] == null)
 	{
 		// Avoids using DOM node for empty labels
@@ -459,14 +459,14 @@ mxCellRenderer.prototype.createLabel = function(state, value)
 			mxConstants.DIALECT_STRICTHTML : state.view.graph.dialect);
 		this.initializeLabel(state, state.text);
 		this.configureShape(state);
-		
+
 		// Workaround for touch devices routing all events for a mouse gesture
 		// (down, move, up) via the initial DOM node. IE additionally redirects
 		// the event via the initial DOM node but the event source is the node
 		// under the mouse, so we need to check if this is the case and force
 		// getCellAt for the subsequent mouseMoves and the final mouseUp.
 		var forceGetCell = false;
-		
+
 		var getState = function(evt)
 		{
 			var result = state;
@@ -475,16 +475,16 @@ mxCellRenderer.prototype.createLabel = function(state, value)
 			{
 				var x = mxEvent.getClientX(evt);
 				var y = mxEvent.getClientY(evt);
-				
+
 				// Dispatches the drop event to the graph which
 				// consumes and executes the source function
 				var pt = mxUtils.convertPoint(graph.container, x, y);
 				result = graph.view.getState(graph.getCellAt(pt.x, pt.y));
 			}
-			
+
 			return result;
 		};
-		
+
 		// TODO: Add handling for special touch device gestures
 		mxEvent.addGestureListeners(state.text.node,
 			mxUtils.bind(this, function(evt)
@@ -531,11 +531,11 @@ mxCellRenderer.prototype.createLabel = function(state, value)
 
 /**
  * Function: initializeLabel
- * 
+ *
  * Initiailzes the label with a suitable container.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose label should be initialized.
  */
 mxCellRenderer.prototype.initializeLabel = function(state, shape)
@@ -552,11 +552,11 @@ mxCellRenderer.prototype.initializeLabel = function(state, shape)
 
 /**
  * Function: createCellOverlays
- * 
+ *
  * Creates the actual shape for showing the overlay for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the overlay should be created.
  */
 mxCellRenderer.prototype.createCellOverlays = function(state)
@@ -564,15 +564,15 @@ mxCellRenderer.prototype.createCellOverlays = function(state)
 	var graph = state.view.graph;
 	var overlays = graph.getCellOverlays(state.cell);
 	var dict = null;
-	
+
 	if (overlays != null)
 	{
 		dict = new mxDictionary();
-		
+
 		for (var i = 0; i < overlays.length; i++)
 		{
 			var shape = (state.overlays != null) ? state.overlays.remove(overlays[i]) : null;
-			
+
 			if (shape == null)
 			{
 				var tmp = new mxImageShape(new mxRectangle(), overlays[i].image.src);
@@ -581,12 +581,12 @@ mxCellRenderer.prototype.createCellOverlays = function(state)
 				tmp.overlay = overlays[i];
 				this.initializeOverlay(state, tmp);
 				this.installCellOverlayListeners(state, overlays[i], tmp);
-	
+
 				if (overlays[i].cursor != null)
 				{
 					tmp.node.style.cursor = overlays[i].cursor;
 				}
-				
+
 				dict.put(overlays[i], tmp);
 			}
 			else
@@ -595,7 +595,7 @@ mxCellRenderer.prototype.createCellOverlays = function(state)
 			}
 		}
 	}
-	
+
 	// Removes unused
 	if (state.overlays != null)
 	{
@@ -604,17 +604,17 @@ mxCellRenderer.prototype.createCellOverlays = function(state)
 			shape.destroy();
 		});
 	}
-	
+
 	state.overlays = dict;
 };
 
 /**
  * Function: initializeOverlay
- * 
+ *
  * Initializes the given overlay.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the overlay should be created.
  * overlay - <mxImageShape> that represents the overlay.
  */
@@ -625,25 +625,25 @@ mxCellRenderer.prototype.initializeOverlay = function(state, overlay)
 
 /**
  * Function: installOverlayListeners
- * 
+ *
  * Installs the listeners for the given <mxCellState>, <mxCellOverlay> and
  * <mxShape> that represents the overlay.
  */
 mxCellRenderer.prototype.installCellOverlayListeners = function(state, overlay, shape)
 {
 	var graph  = state.view.graph;
-	
+
 	mxEvent.addListener(shape.node, 'click', function (evt)
 	{
 		if (graph.isEditing())
 		{
 			graph.stopEditing(!graph.isInvokesStopCellEditing());
 		}
-		
+
 		overlay.fireEvent(new mxEventObject(mxEvent.CLICK,
 				'event', evt, 'cell', state.cell));
 	});
-	
+
 	mxEvent.addGestureListeners(shape.node,
 		function (evt)
 		{
@@ -654,7 +654,7 @@ mxCellRenderer.prototype.installCellOverlayListeners = function(state, overlay, 
 			graph.fireMouseEvent(mxEvent.MOUSE_MOVE,
 				new mxMouseEvent(evt, state));
 		});
-	
+
 	if (mxClient.IS_TOUCH)
 	{
 		mxEvent.addListener(shape.node, 'touchend', function (evt)
@@ -667,18 +667,18 @@ mxCellRenderer.prototype.installCellOverlayListeners = function(state, overlay, 
 
 /**
  * Function: createControl
- * 
+ *
  * Creates the control for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the control should be created.
  */
 mxCellRenderer.prototype.createControl = function(state)
 {
 	var graph = state.view.graph;
 	var image = graph.getFoldingImage(state);
-	
+
 	if (graph.foldingEnabled && image != null)
 	{
 		if (state.control == null)
@@ -700,17 +700,17 @@ mxCellRenderer.prototype.createControl = function(state)
 
 /**
  * Function: createControlClickHandler
- * 
+ *
  * Hook for creating the click handler for the folding icon.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose control click handler should be returned.
  */
 mxCellRenderer.prototype.createControlClickHandler = function(state)
 {
 	var graph = state.view.graph;
-	
+
 	return mxUtils.bind(this, function (evt)
 	{
 		if (this.forceControlClickHandler || graph.isEnabled())
@@ -724,11 +724,11 @@ mxCellRenderer.prototype.createControlClickHandler = function(state)
 
 /**
  * Function: initControl
- * 
+ *
  * Initializes the given control and returns the corresponding DOM node.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the control should be initialized.
  * control - <mxShape> to be initialized.
  * handleEvents - Boolean indicating if mousedown and mousemove should fire events via the graph.
@@ -737,7 +737,7 @@ mxCellRenderer.prototype.createControlClickHandler = function(state)
 mxCellRenderer.prototype.initControl = function(state, control, handleEvents, clickHandler)
 {
 	var graph = state.view.graph;
-	
+
 	// In the special case where the label is in HTML and the display is SVG the image
 	// should go into the graph container directly in order to be clickable. Otherwise
 	// it is obscured by the HTML label that overlaps the cell.
@@ -756,7 +756,7 @@ mxCellRenderer.prototype.initControl = function(state, control, handleEvents, cl
 	}
 
 	var node = control.innerNode || control.node;
-	
+
 	// Workaround for missing click event on iOS is to check tolerance below
 	if (clickHandler != null && !mxClient.IS_IOS)
 	{
@@ -764,10 +764,10 @@ mxCellRenderer.prototype.initControl = function(state, control, handleEvents, cl
 		{
 			node.style.cursor = 'pointer';
 		}
-		
+
 		mxEvent.addListener(node, 'click', clickHandler);
 	}
-	
+
 	if (handleEvents)
 	{
 		var first = null;
@@ -788,7 +788,7 @@ mxCellRenderer.prototype.initControl = function(state, control, handleEvents, cl
 				graph.fireMouseEvent(mxEvent.MOUSE_UP, new mxMouseEvent(evt, state));
 				mxEvent.consume(evt);
 			});
-		
+
 		// Uses capture phase for event interception to stop bubble phase
 		if (clickHandler != null && mxClient.IS_IOS)
 		{
@@ -797,7 +797,7 @@ mxCellRenderer.prototype.initControl = function(state, control, handleEvents, cl
 				if (first != null)
 				{
 					var tol = graph.tolerance;
-					
+
 					if (Math.abs(first.x - mxEvent.getClientX(evt)) < tol &&
 						Math.abs(first.y - mxEvent.getClientY(evt)) < tol)
 					{
@@ -808,18 +808,18 @@ mxCellRenderer.prototype.initControl = function(state, control, handleEvents, cl
 			}, true);
 		}
 	}
-	
+
 	return node;
 };
 
 /**
  * Function: isShapeEvent
- * 
+ *
  * Returns true if the event is for the shape of the given state. This
  * implementation always returns true.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose shape fired the event.
  * evt - Mouse event which was fired.
  */
@@ -830,12 +830,12 @@ mxCellRenderer.prototype.isShapeEvent = function(state, evt)
 
 /**
  * Function: isLabelEvent
- * 
+ *
  * Returns true if the event is for the label of the given state. This
  * implementation always returns true.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose label fired the event.
  * evt - Mouse event which was fired.
  */
@@ -846,11 +846,11 @@ mxCellRenderer.prototype.isLabelEvent = function(state, evt)
 
 /**
  * Function: installListeners
- * 
+ *
  * Installs the event listeners for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the event listeners should be isntalled.
  */
 mxCellRenderer.prototype.installListeners = function(state)
@@ -863,18 +863,18 @@ mxCellRenderer.prototype.installListeners = function(state)
 	var getState = function(evt)
 	{
 		var result = state;
-		
+
 		if ((graph.dialect != mxConstants.DIALECT_SVG && mxEvent.getSource(evt).nodeName == 'IMG') || mxClient.IS_TOUCH)
 		{
 			var x = mxEvent.getClientX(evt);
 			var y = mxEvent.getClientY(evt);
-			
+
 			// Dispatches the drop event to the graph which
 			// consumes and executes the source function
 			var pt = mxUtils.convertPoint(graph.container, x, y);
 			result = graph.view.getState(graph.getCellAt(pt.x, pt.y));
 		}
-		
+
 		return result;
 	};
 
@@ -901,7 +901,7 @@ mxCellRenderer.prototype.installListeners = function(state)
 			}
 		})
 	);
-	
+
 	if (graph.nativeDblClickEnabled)
 	{
 		mxEvent.addListener(state.shape.node, 'dblclick',
@@ -919,11 +919,11 @@ mxCellRenderer.prototype.installListeners = function(state)
 
 /**
  * Function: redrawLabel
- * 
+ *
  * Redraws the label for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose label should be redrawn.
  */
 mxCellRenderer.prototype.redrawLabel = function(state, forced)
@@ -944,7 +944,7 @@ mxCellRenderer.prototype.redrawLabel = function(state, forced)
 		state.text.destroy();
 		state.text = null;
 	}
-	
+
 	if (state.text == null && value != null && (mxUtils.isNode(value) || value.length > 0))
 	{
 		this.createLabel(state, value);
@@ -967,19 +967,19 @@ mxCellRenderer.prototype.redrawLabel = function(state, forced)
 				// Forces a full repaint
 				state.text.lastValue = null;
 			}
-			
+
 			state.text.resetStyles();
 			state.text.apply(state);
 			this.configureShape(state);
-			
+
 			// Special case where value is obtained via hook in graph
 			state.text.valign = graph.getVerticalAlign(state);
 		}
-		
+
 		var bounds = this.getLabelBounds(state);
 		var nextScale = this.getTextScale(state);
 		this.resolveColor(state, 'color', mxConstants.STYLE_FONTCOLOR);
-		
+
 		if (forced || state.text.value != value || state.text.isWrapping != wrapping ||
 			state.text.overflow != overflow || state.text.isClipping != clipping ||
 			state.text.scale != nextScale || state.text.dialect != dialect ||
@@ -992,7 +992,7 @@ mxCellRenderer.prototype.redrawLabel = function(state, forced)
 			state.text.wrap = wrapping;
 			state.text.clipped = clipping;
 			state.text.overflow = overflow;
-			
+
 			// Preserves visible state
 			var vis = state.text.node.style.visibility;
 			this.redrawLabelShape(state.text);
@@ -1003,11 +1003,11 @@ mxCellRenderer.prototype.redrawLabel = function(state, forced)
 
 /**
  * Function: isTextShapeInvalid
- * 
+ *
  * Returns true if the style for the text shape has changed.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose label should be checked.
  * shape - <mxText> shape to be checked.
  */
@@ -1016,7 +1016,7 @@ mxCellRenderer.prototype.isTextShapeInvalid = function(state, shape)
 	function check(property, stylename, defaultValue)
 	{
 		var result = false;
-		
+
 		// Workaround for spacing added to directional spacing
 		if (stylename == 'spacingTop' || stylename == 'spacingRight' ||
 			stylename == 'spacingBottom' || stylename == 'spacingLeft')
@@ -1029,7 +1029,7 @@ mxCellRenderer.prototype.isTextShapeInvalid = function(state, shape)
 			result = shape[property] != ((state.style[stylename] != null) ?
 				state.style[stylename] : defaultValue);
 		}
-		
+
 		return result;
 	};
 
@@ -1053,11 +1053,11 @@ mxCellRenderer.prototype.isTextShapeInvalid = function(state, shape)
 
 /**
  * Function: redrawLabelShape
- * 
+ *
  * Called to invoked redraw on the given text shape.
- * 
+ *
  * Parameters:
- * 
+ *
  * shape - <mxText> shape to be redrawn.
  */
 mxCellRenderer.prototype.redrawLabelShape = function(shape)
@@ -1067,11 +1067,11 @@ mxCellRenderer.prototype.redrawLabelShape = function(shape)
 
 /**
  * Function: getTextScale
- * 
+ *
  * Returns the scaling used for the label of the given state
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose label scale should be returned.
  */
 mxCellRenderer.prototype.getTextScale = function(state)
@@ -1081,11 +1081,11 @@ mxCellRenderer.prototype.getTextScale = function(state)
 
 /**
  * Function: getLabelBounds
- * 
+ *
  * Returns the bounds to be used to draw the label of the given state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose label bounds should be returned.
  */
 mxCellRenderer.prototype.getLabelBounds = function(state, text, margin, disableRotation)
@@ -1100,9 +1100,9 @@ mxCellRenderer.prototype.getLabelBounds = function(state, text, margin, disableR
 		var spacing = text.getSpacing(null, margin);
 		bounds.x += spacing.x * scale;
 		bounds.y += spacing.y * scale;
-		
+
 		var geo = state.view.graph.getCellGeometry(state.cell);
-		
+
 		if (geo != null)
 		{
 			bounds.width = Math.max(0, geo.width * scale);
@@ -1118,10 +1118,10 @@ mxCellRenderer.prototype.getLabelBounds = function(state, text, margin, disableR
 			bounds.x = bounds.y;
 			bounds.y = tmp;
 		}
-		
+
 		bounds.x += state.x;
 		bounds.y += state.y;
-		
+
 		// Minimum of 1 fixes alignment bug in HTML labels
 		bounds.width = Math.max(1, state.width);
 		bounds.height = Math.max(1, state.height);
@@ -1137,43 +1137,43 @@ mxCellRenderer.prototype.getLabelBounds = function(state, text, margin, disableR
 		bounds.width = bounds.height;
 		bounds.height = tmp;
 	}
-	
+
 	// Shape can modify its label bounds
 	if (state.shape != null)
 	{
 		var hpos = mxUtils.getValue(state.style, mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_CENTER);
 		var vpos = mxUtils.getValue(state.style, mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_MIDDLE);
-		
+
 		if (hpos == mxConstants.ALIGN_CENTER && vpos == mxConstants.ALIGN_MIDDLE)
 		{
 			bounds = state.shape.getLabelBounds(bounds);
 		}
 	}
-	
+
 	// Label width style overrides actual label width
 	var lw = mxUtils.getValue(state.style, mxConstants.STYLE_LABEL_WIDTH, null);
-	
+
 	if (lw != null)
 	{
 		bounds.width = parseFloat(lw) * scale;
 	}
-	
+
 	if (!isEdge)
 	{
 		this.rotateLabelBounds(state, bounds, text, margin, disableRotation);
 	}
-	
+
 	return bounds;
 };
 
 /**
  * Function: rotateLabelBounds
- * 
+ *
  * Adds the shape rotation to the given label bounds and
  * applies the alignment and offsets.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose label bounds should be rotated.
  * bounds - <mxRectangle> the rectangle to be rotated.
  */
@@ -1182,7 +1182,7 @@ mxCellRenderer.prototype.rotateLabelBounds = function(state, bounds, text, margi
 	var m = (margin != null) ? margin : text.margin
 	bounds.y -= m.y * bounds.height;
 	bounds.x -= m.x * bounds.width;
-	
+
 	if (!this.legacySpacing || (state.style[mxConstants.STYLE_OVERFLOW] != 'fill' &&
 		state.style[mxConstants.STYLE_OVERFLOW] != 'width' &&
 		(state.style[mxConstants.STYLE_OVERFLOW] != 'block' ||
@@ -1192,11 +1192,11 @@ mxCellRenderer.prototype.rotateLabelBounds = function(state, bounds, text, margi
 		var spacing = text.getSpacing(state.style[mxConstants.STYLE_BLOCK_SPACING] == '1', m);
 		bounds.x += spacing.x * s;
 		bounds.y += spacing.y * s;
-		
+
 		var hpos = mxUtils.getValue(state.style, mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_CENTER);
 		var vpos = mxUtils.getValue(state.style, mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_MIDDLE);
 		var lw = mxUtils.getValue(state.style, mxConstants.STYLE_LABEL_WIDTH, null);
-		
+
 		bounds.width = Math.max(0, bounds.width - ((hpos == mxConstants.ALIGN_CENTER &&
 			lw == null) ? (text.spacingLeft * s + text.spacingRight * s) : 0));
 		bounds.height = Math.max(0, bounds.height - ((vpos == mxConstants.ALIGN_MIDDLE) ?
@@ -1210,13 +1210,13 @@ mxCellRenderer.prototype.rotateLabelBounds = function(state, bounds, text, margi
 	{
 		var cx = state.getCenterX();
 		var cy = state.getCenterY();
-		
+
 		if (bounds.x != cx || bounds.y != cy)
 		{
 			var rad = theta * (Math.PI / 180);
 			var pt = mxUtils.getRotatedPoint(new mxPoint(bounds.x, bounds.y),
 				Math.cos(rad), Math.sin(rad), new mxPoint(cx, cy));
-			
+
 			bounds.x = pt.x;
 			bounds.y = pt.y;
 		}
@@ -1225,11 +1225,11 @@ mxCellRenderer.prototype.rotateLabelBounds = function(state, bounds, text, margi
 
 /**
  * Function: redrawCellOverlays
- * 
+ *
  * Redraws the overlays for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose overlays should be redrawn.
  */
 mxCellRenderer.prototype.redrawCellOverlays = function(state, forced)
@@ -1242,11 +1242,11 @@ mxCellRenderer.prototype.redrawCellOverlays = function(state, forced)
         var rad = mxUtils.toRadians(rot);
         var cos = Math.cos(rad);
         var sin = Math.sin(rad);
-		
+
 		state.overlays.visit(function(id, shape)
 		{
 			var bounds = shape.overlay.getBounds(state);
-		
+
 			if (!state.view.graph.getModel().isEdge(state.cell))
 			{
 				if (state.shape != null && rot != 0)
@@ -1263,7 +1263,7 @@ mxCellRenderer.prototype.redrawCellOverlays = function(state, forced)
 			        bounds.y = Math.round(cy - bounds.height / 2);
 				}
 			}
-			
+
 			if (forced || shape.bounds == null || shape.scale != state.view.scale ||
 				!shape.bounds.equals(bounds))
 			{
@@ -1277,17 +1277,17 @@ mxCellRenderer.prototype.redrawCellOverlays = function(state, forced)
 
 /**
  * Function: redrawControl
- * 
+ *
  * Redraws the control for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose control should be redrawn.
  */
 mxCellRenderer.prototype.redrawControl = function(state, forced)
 {
 	var image = state.view.graph.getFoldingImage(state);
-	
+
 	if (state.control != null && image != null)
 	{
 		var bounds = this.getControlBounds(state, image.width, image.height);
@@ -1295,14 +1295,14 @@ mxCellRenderer.prototype.redrawControl = function(state, forced)
 				mxUtils.getValue(state.style, mxConstants.STYLE_ROTATION, 0) :
 				state.shape.getTextRotation();
 		var s = state.view.scale;
-		
+
 		if (forced || state.control.scale != s || !state.control.bounds.equals(bounds) ||
 			state.control.rotation != r)
 		{
 			state.control.rotation = r;
 			state.control.bounds = bounds;
 			state.control.scale = s;
-			
+
 			state.control.redraw();
 		}
 	}
@@ -1310,7 +1310,7 @@ mxCellRenderer.prototype.redrawControl = function(state, forced)
 
 /**
  * Function: getControlBounds
- * 
+ *
  * Returns the bounds to be used to draw the control (folding icon) of the
  * given state.
  */
@@ -1321,17 +1321,17 @@ mxCellRenderer.prototype.getControlBounds = function(state, w, h)
 		var s = state.view.scale;
 		var cx = state.getCenterX();
 		var cy = state.getCenterY();
-	
+
 		if (!state.view.graph.getModel().isEdge(state.cell))
 		{
 			cx = state.x + w * s;
 			cy = state.y + h * s;
-			
+
 			if (state.shape != null)
 			{
 				// TODO: Factor out common code
 				var rot = state.shape.getShapeRotation();
-				
+
 				if (this.legacyControlPosition)
 				{
 					rot = mxUtils.getValue(state.style, mxConstants.STYLE_ROTATION, 0);
@@ -1345,13 +1345,13 @@ mxCellRenderer.prototype.getControlBounds = function(state, w, h)
 						cy -= t;
 					}
 				}
-				
+
 				if (rot != 0)
 				{
 			        var rad = mxUtils.toRadians(rot);
 			        var cos = Math.cos(rad);
 			        var sin = Math.sin(rad);
-			        
+
 			        var point = mxUtils.getRotatedPoint(new mxPoint(cx, cy), cos, sin,
 			        		new mxPoint(state.getCenterX(), state.getCenterY()));
 			        cx = point.x;
@@ -1359,22 +1359,22 @@ mxCellRenderer.prototype.getControlBounds = function(state, w, h)
 				}
 			}
 		}
-		
-		return (state.view.graph.getModel().isEdge(state.cell)) ? 
+
+		return (state.view.graph.getModel().isEdge(state.cell)) ?
 			new mxRectangle(Math.round(cx - w / 2 * s), Math.round(cy - h / 2 * s), Math.round(w * s), Math.round(h * s))
 			: new mxRectangle(Math.round(cx - w / 2 * s), Math.round(cy - h / 2 * s), Math.round(w * s), Math.round(h * s));
 	}
-	
+
 	return null;
 };
 
 /**
  * Function: insertStateAfter
- * 
+ *
  * Inserts the given array of <mxShapes> after the given nodes in the DOM.
- * 
+ *
  * Parameters:
- * 
+ *
  * shapes - Array of <mxShapes> to be inserted.
  * node - Node in <drawPane> after which the shapes should be inserted.
  * htmlNode - Node in the graph container after which the shapes should be inserted that
@@ -1383,7 +1383,7 @@ mxCellRenderer.prototype.getControlBounds = function(state, w, h)
 mxCellRenderer.prototype.insertStateAfter = function(state, node, htmlNode)
 {
 	var shapes = this.getShapesForState(state);
-	
+
 	for (var i = 0; i < shapes.length; i++)
 	{
 		if (shapes[i] != null && shapes[i].node != null)
@@ -1391,7 +1391,7 @@ mxCellRenderer.prototype.insertStateAfter = function(state, node, htmlNode)
 			var html = shapes[i].node.parentNode != state.view.getDrawPane() &&
 				shapes[i].node.parentNode != state.view.getOverlayPane();
 			var temp = (html) ? htmlNode : node;
-			
+
 			if (temp != null && temp.nextSibling != shapes[i].node)
 			{
 				if (temp.nextSibling == null)
@@ -1409,12 +1409,12 @@ mxCellRenderer.prototype.insertStateAfter = function(state, node, htmlNode)
 				if (shapes[i].node.parentNode == state.view.graph.container)
 				{
 					var canvas = state.view.canvas;
-					
+
 					while (canvas != null && canvas.parentNode != state.view.graph.container)
 					{
 						canvas = canvas.parentNode;
 					}
-					
+
 					if (canvas != null && canvas.nextSibling != null)
 					{
 						if (canvas.nextSibling != shapes[i].node)
@@ -1435,7 +1435,7 @@ mxCellRenderer.prototype.insertStateAfter = function(state, node, htmlNode)
 					shapes[i].node.parentNode.insertBefore(shapes[i].node, shapes[i].node.parentNode.firstChild);
 				}
 			}
-			
+
 			if (html)
 			{
 				htmlNode = shapes[i].node;
@@ -1452,12 +1452,12 @@ mxCellRenderer.prototype.insertStateAfter = function(state, node, htmlNode)
 
 /**
  * Function: getShapesForState
- * 
+ *
  * Returns the <mxShapes> for the given cell state in the order in which they should
  * appear in the DOM.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose shapes should be returned.
  */
 mxCellRenderer.prototype.getShapesForState = function(state)
@@ -1467,13 +1467,13 @@ mxCellRenderer.prototype.getShapesForState = function(state)
 
 /**
  * Function: redraw
- * 
+ *
  * Updates the bounds or points and scale of the shapes for the given cell
  * state. This is called in mxGraphView.validatePoints as the last step of
  * updating all cells.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the shapes should be updated.
  * force - Optional boolean that specifies if the cell should be reconfiured
  * and redrawn without any additional checks.
@@ -1495,11 +1495,11 @@ mxCellRenderer.prototype.redraw = function(state, force, rendering)
 
 /**
  * Function: redrawShape
- * 
+ *
  * Redraws the shape for the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> whose label should be redrawn.
  */
 mxCellRenderer.prototype.redrawShape = function(state, force, rendering)
@@ -1514,23 +1514,23 @@ mxCellRenderer.prototype.redrawShape = function(state, force, rendering)
 		state.shape.destroy();
 		state.shape = null;
 	}
-	
+
 	if (state.shape == null && state.view.graph.container != null &&
 		state.cell != state.view.currentRoot &&
 		(model.isVertex(state.cell) || model.isEdge(state.cell)))
 	{
 		state.shape = this.createShape(state);
-		
+
 		if (state.shape != null)
 		{
 			state.shape.minSvgStrokeWidth = this.minSvgStrokeWidth;
 			state.shape.antiAlias = this.antiAlias;
-	
+
 			this.createIndicatorShape(state);
 			this.initializeShape(state);
 			this.createCellOverlays(state);
 			this.installListeners(state);
-			
+
 			// Forces a refresh of the handler if one exists
 			state.view.graph.selectionCellsHandler.updateHandler(state);
 		}
@@ -1544,7 +1544,7 @@ mxCellRenderer.prototype.redrawShape = function(state, force, rendering)
 		state.view.graph.selectionCellsHandler.updateHandler(state);
 		force = true;
 	}
-	
+
 	// Updates indicator shape
 	if (state.shape != null && state.shape.indicatorShape !=
 		this.getShape(state.view.graph.getIndicatorShape(state)))
@@ -1554,9 +1554,9 @@ mxCellRenderer.prototype.redrawShape = function(state, force, rendering)
 			state.shape.indicator.destroy();
 			state.shape.indicator = null;
 		}
-		
+
 		this.createIndicatorShape(state);
-		
+
 		if (state.shape.indicatorShape != null)
 		{
 			state.shape.indicator = new state.shape.indicatorShape();
@@ -1570,7 +1570,7 @@ mxCellRenderer.prototype.redrawShape = function(state, force, rendering)
 	{
 		// Handles changes of the collapse icon
 		this.createControl(state);
-		
+
 		// Redraws the cell if required, ignores changes to bounds if points are
 		// defined as the bounds are updated for the given points inside the shape
 		if (force || this.isShapeInvalid(state, state.shape))
@@ -1587,12 +1587,12 @@ mxCellRenderer.prototype.redrawShape = function(state, force, rendering)
 			}
 
 			state.shape.scale = state.view.scale;
-			
+
 			if (rendering == null || rendering)
 			{
 				this.doRedrawShape(state);
 			}
-			
+
 			shapeChanged = true;
 		}
 	}
@@ -1602,7 +1602,7 @@ mxCellRenderer.prototype.redrawShape = function(state, force, rendering)
 
 /**
  * Function: doRedrawShape
- * 
+ *
  * Invokes redraw on the shape of the given state.
  */
 mxCellRenderer.prototype.doRedrawShape = function(state)
@@ -1612,7 +1612,7 @@ mxCellRenderer.prototype.doRedrawShape = function(state)
 
 /**
  * Function: isShapeInvalid
- * 
+ *
  * Returns true if the given shape must be repainted.
  */
 mxCellRenderer.prototype.isShapeInvalid = function(state, shape)
@@ -1624,11 +1624,11 @@ mxCellRenderer.prototype.isShapeInvalid = function(state, shape)
 
 /**
  * Function: destroy
- * 
+ *
  * Destroys the shapes associated with the given cell state.
- * 
+ *
  * Parameters:
- * 
+ *
  * state - <mxCellState> for which the shapes should be destroyed.
  */
 mxCellRenderer.prototype.destroy = function(state)
@@ -1636,18 +1636,18 @@ mxCellRenderer.prototype.destroy = function(state)
 	if (state.shape != null)
 	{
 		if (state.text != null)
-		{		
+		{
 			state.text.destroy();
 			state.text = null;
 		}
-		
+
 		if (state.overlays != null)
 		{
 			state.overlays.visit(function(id, shape)
 			{
 				shape.destroy();
 			});
-			
+
 			state.overlays = null;
 		}
 
@@ -1656,7 +1656,7 @@ mxCellRenderer.prototype.destroy = function(state)
 			state.control.destroy();
 			state.control = null;
 		}
-		
+
 		state.shape.destroy();
 		state.shape = null;
 	}
