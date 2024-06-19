@@ -268,13 +268,14 @@ let diagram = pako.inflateRaw(Graph.stringToArrayBuffer(compressed), {
 });
 diagram = decodeURIComponent(diagram);
 
-console.log("==== diagram ====");
-console.log(diagram);
-console.log("==== diagram end ====");
-
 // Now parse XML again from the diagram content
 // xmlDoc = parser.parseFromString(diagram, "text/xml");
 xmlDoc = mxUtils.parseXml(diagram);
+
+// now pretty-print it
+let prettyXml = mxUtils.getPrettyXml(xmlDoc);
+// and write it to disk
+fs.writeFileSync("pretty-diagram.xml", prettyXml, "utf8");
 
 // Show off the xmlDoc now
 console.log("==== xmlDoc ====");
@@ -293,3 +294,29 @@ editor.graph.container = document.createElement("svg");
 editor.graph.view.createHtml();
 
 editor.setGraphXml(xmlDoc.documentElement);
+
+mxGraphView.prototype.redrawEnumerationState = function (state) {
+  console.log("yolo (from mxGraphView.prototype.redrawEnumerationState)");
+};
+let svg = editor.graph.getSvg();
+
+// (note: svg is an SVGElement)
+
+let styleElement = document.createElementNS(
+  "http://www.w3.org/2000/svg",
+  "style",
+);
+styleElement.textContent = `
+  @font-face {
+    font-family: 'Iosevka';
+    src: url('https://cdn.fasterthanli.me/static/fonts/IosevkaFTLNerdFont-Regular-subset.c89b6cd465710cf4.woff2');
+  }
+`;
+svg.insertBefore(styleElement, svg.firstChild);
+
+// serialize to XML
+let xml = mxUtils.getXml(svg);
+console.log(xml);
+
+// write xml to disk
+fs.writeFileSync("./output.svg", xml, "utf8");
