@@ -250,6 +250,7 @@ evalAndExport = (filePath, exportNames) => {
 
 evalAndExport("./src/main/webapp/js/grapheditor/Graph.js", ["Graph"]);
 evalAndExport("./src/main/webapp/js/grapheditor/Editor.js", ["Editor"]);
+evalAndExport("./src/main/webapp/js/grapheditor/Shapes.js", []);
 
 // Load the example.drawio file
 const exampleFilePath = "./example.drawio";
