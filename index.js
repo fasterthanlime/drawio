@@ -262,31 +262,41 @@ let xmlDoc = parser.parseFromString(exampleFileContent, "text/xml");
 
 // Find a 'diagram' node
 let diagramNode = xmlDoc.querySelector("diagram");
-let compressed = atob(diagramNode.textContent);
-let pako = require("pako");
-let diagram = pako.inflateRaw(Graph.stringToArrayBuffer(compressed), {
-  to: "string",
-});
-diagram = decodeURIComponent(diagram);
 
-// Now parse XML again from the diagram content
-// xmlDoc = parser.parseFromString(diagram, "text/xml");
-xmlDoc = mxUtils.parseXml(diagram);
+let xmlRoot;
+
+// If it has an `mxGraphModel` child, then it's uncompressed and we can use that
+// directly:
+if (diagramNode.querySelector("mxGraphModel")) {
+  console.log("Diagram is uncompressed, using as is");
+  xmlRoot = diagramNode.querySelector("mxGraphModel");
+} else {
+  let compressed = atob(diagramNode.textContent);
+  let pako = require("pako");
+  let diagram = pako.inflateRaw(Graph.stringToArrayBuffer(compressed), {
+    to: "string",
+  });
+  diagram = decodeURIComponent(diagram);
+
+  // Now parse XML again from the diagram content
+  xmlDoc = mxUtils.parseXml(diagram);
+  xmlRoot = xmlDoc.documentElement;
+}
 
 // now pretty-print it
-let prettyXml = mxUtils.getPrettyXml(xmlDoc);
+let prettyXml = mxUtils.getPrettyXml(xmlRoot);
 // and write it to disk
 fs.writeFileSync("pretty-diagram.xml", prettyXml, "utf8");
 
-// Show off the xmlDoc now
-console.log("==== xmlDoc ====");
+// Show off the xmlRoot now
+console.log("==== xmlRoot ====");
 function printChildNodes(node, indent = 0) {
   console.log(" ".repeat(indent) + node.nodeName);
   node.childNodes.forEach((child) => printChildNodes(child, indent + 2));
 }
 
-printChildNodes(xmlDoc.documentElement);
-console.log("==== xmlDoc end ====");
+printChildNodes(xmlRoot);
+console.log("==== xmlRoot end ====");
 
 // Make a new Editor
 let editor = new Editor(true, null, null, null, null);
@@ -294,7 +304,25 @@ editor.graph.container = document.createElement("svg");
 
 editor.graph.view.createHtml();
 
-editor.setGraphXml(xmlDoc.documentElement);
+// load "default" style from `src/main/webapp/styles/default.xml`
+let defaultStyle = fs.readFileSync(
+  "src/main/webapp/styles/default.xml",
+  "utf8",
+);
+// parse as XML
+let defaultStyleXml = mxUtils.parseXml(defaultStyle);
+console.log(
+  "loading default style, pretty XML: ",
+  mxUtils.getPrettyXml(defaultStyleXml),
+);
+let styleDec = new mxCodec();
+let res = styleDec.decode(
+  defaultStyleXml.documentElement,
+  editor.graph.stylesheet,
+);
+console.log("stylesheet is now: ", editor.graph.stylesheet);
+
+editor.setGraphXml(xmlRoot);
 
 mxGraphView.prototype.redrawEnumerationState = function (state) {
   console.log("yolo (from mxGraphView.prototype.redrawEnumerationState)");
@@ -312,6 +340,12 @@ styleElement.textContent = `
     font-family: 'Iosevka';
     src: url('https://cdn.fasterthanli.me/static/fonts/IosevkaFTLNerdFont-Regular-subset.c89b6cd465710cf4.woff2');
   }
+
+  @font-face {
+    font-family: 'Iosevka';
+    font-weight: bold;
+    src: url('https://cdn.fasterthanli.me/static/fonts/IosevkaFTLNerdFont-Bold-subset.30401e6ebe28ff57.woff2');
+  }
 `;
 svg.insertBefore(styleElement, svg.firstChild);
 
@@ -321,3 +355,4 @@ console.log(xml);
 
 // write xml to disk
 fs.writeFileSync("./output.svg", xml, "utf8");
+console.log("Wrote output to disk");
